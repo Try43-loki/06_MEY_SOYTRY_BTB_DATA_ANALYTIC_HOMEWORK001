@@ -3,8 +3,6 @@ import scrapy
 from scrapy_selenium import SeleniumRequest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver import ActionChains
-
 from testimonials.items import TestimonialsItem
 class TestimonialSpider(scrapy.Spider):
     name = "testimonial"
@@ -43,11 +41,10 @@ class TestimonialSpider(scrapy.Spider):
     def parse(self, response):
         driver = response.meta['driver']
         time.sleep(1)
-        driver.find_element(By.XPATH,'//*[@id="navbarContent"]/ul[1]/li[4]/a').click()
-        MAX_SCROLLS = 50      
+        driver.find_element(By.XPATH,'//*[@id="navbarContent"]/ul[1]/li[4]/a').click() 
         last_height = driver.execute_script("return document.body.scrollHeight")
-        scroll_count = 0
-        while scroll_count < MAX_SCROLLS:
+        time_scroll = 0
+        while time_scroll < 10:
          
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
@@ -57,7 +54,7 @@ class TestimonialSpider(scrapy.Spider):
             if new_height == last_height:
                 break
             last_height = new_height
-            scroll_count += 1
+            time_scroll += 1
 
         testimonials_contianer = driver.find_element(By.XPATH,'//div[@class="testimonials"]')
         testimonials = testimonials_contianer.find_elements(By.XPATH,'.//div[@class="testimonial"]')
